@@ -72,12 +72,6 @@ function getCookie(input){
     return valeurCookie;
 }
 
-
-
-
-
-
-
 //ajout des evenements
 
 let btn = document.getElementById('buttonValidation');
