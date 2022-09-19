@@ -1,5 +1,5 @@
-function CalculGain(){
-    //On vérifie les inputs
+function CalculGain() {
+    //on vérifie les inputs
     CheckInputs();
 
     //On récupère le formulaire dans le html    
@@ -7,12 +7,7 @@ function CalculGain(){
     //On le transforme en objet FormData
     let formObj = new FormData(myForm);
 
-
-    //Je veux créer une classe calculdata
-    //Le constructeur récupère un objet formdata en parametre
-    //et il sera similaire à l'objet Object ci-dessous
-
-    //On récupère les inputs de notre formulaire par leurs noms
+    //on récupère les input de notre form par leurs name
     let myCalculDatas = {
         tauxHoraire : formObj.get('TH'),
         tauxJournalier : formObj.get('TJM'),
@@ -22,32 +17,20 @@ function CalculGain(){
         qteextras : formObj.get('QteExtras'),
         charges : formObj.get('Charges'),
 
-        gainHeure: function(){
-            return this.tauxHoraire * this.qtetauxHoraire
-        },
-        gainJour : function(){
-            return this.tauxJournalier * this.qtetauxJournalier
-        },
-        gainExtras : function(){
-            return this.extras * this.qteextras
-        },
-        totalBrut : function(){
-            return this.gainHeure() + this.gainJour() + this.gainExtras()
-        },
-        chargeADeduire: function(){
-            return (this.totalBrut() * (this.charges/100))
-        },
-        totalNet : function(){
-            return this.totalBrut() - this.chargeADeduire()
-        }
+        gainHeure : this.tauxHoraire * this.qtetauxHoraire,
+        gainJour : this.tauxJournalier * this.qtetauxJournalier,
+        gainExtras : this.extras * this.qteextras,
+
+        totalBrut : this.gainHeure + this.gainJour + this.gainExtras,   
+        chargeADeduire : (this.totalBrut * (this.charges/100)),
+        totalNet : this.totalBrut - this.chargeADeduire,
     };
 
-    //Animer le résultat 
-    animateCompteur("resultatBrut", myCalculDatas.totalBrut());
-    animateCompteur("resultatDifference", myCalculDatas.chargeADeduire());
-    animateCompteur("resultatNet", myCalculDatas.totalNet());
+//animer le résultat
+animateCompteur("resultatBrut",myCalculDatas.totalBrut);
+animateCompteur("resultatDifference",myCalculDatas.chargeADeduire);
+animateCompteur("resultatNet",myCalculDatas.totalNet);
 }
-
 
 async function animateCompteur(idARemplacer, total){
     let cpt = 0;
@@ -69,27 +52,57 @@ async function animateCompteur(idARemplacer, total){
         monElementHtmlDeResultat.innerText = total.toFixed(2)+" €";
     }
 } 
- 
+
 function timer(ms) {
-     return new Promise(res => setTimeout(res, ms)); 
+    return new Promise(res => setTimeout(res, ms)); 
     }
 
-function CheckInputs(){
+    // let tauxHoraire = formObj.get('TH');
+    // let tauxJournalier = formObj.get('TJM');
+    // let extras = formObj.get('Extras');
+
+    // let qtetauxHoraire = formObj.get('QteTH');
+    // let qtetauxJournalier = formObj.get('QteTJM');
+    // let qteextras = formObj.get('QteExtras');
+
+    // let charges = formObj.get('Charges');
+
+    //calculs
+    // let gainHeure = tauxHoraire * qtetauxHoraire;
+
+    // let gainJour = tauxJournalier * qtetauxJournalier;
+
+    // let gainExtras = extras * qteextras;
+
+    //TOTAL
+    // let totalBrut = gainHeure + gainJour + gainExtras;
+
+    // document.getElementById('resultatBrut').innerText = totalBrut+'€';
+
+    // let chargeADeduire = (totalBrut * (charges/100));
+    // let totalNet = totalBrut - chargeADeduire;
+
+    // document.getElementById('resultatBrut').innerText = totalBrut.toFixed(2)+"€";
+    // document.getElementById('resultatDifference').innerText = chargeADeduire.toFixed(2)+"€";
+    // document.getElementById('resultatNet').innerText = totalNet.toFixed(2)+"€";
+// }
+
+function CheckInputs() {
     let mesInputs = document.querySelectorAll('#formCalculGain input.form-control');
 
     mesInputs.forEach(monInput => {
-        //Vérifier si il vaut 0 ou plus
-        if(monInput.value < 0){
+        //vérifier s'il vaut 0 ou plus
+        if(monInput.value < 0) {
             monInput.value = 0;
         }
-
         saveElementInCookies(monInput);
     });
 }
 
-function saveElementInCookies(input){
+function saveElementInCookies(input) {
     document.cookie = input.name+'='+input.value;
 }
+
 
 
 function getCookie(input){
@@ -108,22 +121,25 @@ function getCookie(input){
     return valeurCookie;
 }
 
-//Ajout des évènements
-let btn = document.getElementById("buttonValidation");
-btn.addEventListener('click', CalculGain);
+//ajout des evenements
+
+let btn = document.getElementById('buttonValidation');
+btn.addEventListener('click',CalculGain);
 
 let mesInputs = document.querySelectorAll('#formCalculGain input.form-control');
 
+
 mesInputs.forEach(monInput => {
-    //Si il a une valeur en cookie, lui donner
+    //si l'input a une val en cookie lui affectuer
     let cookie = getCookie(monInput);
 
     if(cookie != undefined && cookie != null){
         monInput.value = cookie;
     }
 
-
     monInput.addEventListener('keyup', CalculGain);
     monInput.addEventListener('change', CalculGain);
 });
+
+
 CalculGain();
