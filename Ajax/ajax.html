@@ -11,13 +11,14 @@
     <header>
         <h1>AJAX</h1>
     </header>
-
-    <button onclick="ShowUsers()">Afficher les utilisateurs</button>
-    <div id="allUtilisateurs">
-        <i>Ici seront affichés les utilisateurs</i>
+    <!-- <input type="number" id="numberPageUsers">
+    <button onclick="ShowUsers()">Afficher les utilisateurs</button> -->
+    <div class="users-container" id="allUtilisateurs">
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>;
+        <i>...</i>
     </div>
 
-
+    <div id="pagination" class="myPagination"></div>
 
     <script src="./ajax.js"></script>
 </body>
