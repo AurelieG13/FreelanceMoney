@@ -37,6 +37,7 @@ const loader = '<div class="lds-ring"><div></div><div></div><div></div><div></di
 
 
 //appel AJAX
+//rqte GET
 function getUsers(numeroPage) {
     document.getElementById('allUtilisateurs').innerHTML = loader;
     document.getElementById('pagination').innerHTML = '';
@@ -89,3 +90,101 @@ function setUsersInPage(listUsers) {
 document.addEventListener("DOMContentLoaded", function() {
     getUsers(1);
 });
+
+function createUsers(){
+    const xhr = new XMLHttpRequest();
+    const url = 'https://reqres.in/api/users';
+    xhr.open('POST', url);
+    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+    xhr.addEventListener('readystatechange', function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 201) {
+                //retour de l'appel ajax
+                console.log("Response = " + xhr.response);
+                const object = JSON.parse(xhr.response);
+                console.log(object);
+            }
+            else if(xhr.status === 404) {
+                alert("impossible de trouver l'url de la requete.");
+            }
+            else {
+                alert('une erreur est survenue')
+            }
+        };
+    });
+
+    let myForm = new FormData();
+    myForm.append('name', 'Aurélie');
+    myForm.append('job', 'Dev');
+    var object = {};
+    myForm.forEach((value, key) => object[key] = value);
+    var json = JSON.stringify(object);
+    xhr.send(json);
+}
+
+
+function createUserApiFetch() {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json')
+
+    const body = JSON.stringify({
+        name: document.getElementById('nom').value,
+        job: document.getElementById('job').value
+    });
+    const init = {
+        method :'POST',
+        headers : headers,
+        body: body };
+
+    fetch('https://reqres.in/api/users', init)
+        .then((response) => {
+            return response.json();
+        })
+        .then((response) => {
+            console.log(response)
+        })
+        .catch(error => alert('Erreur : '+error));
+}
+
+function deleteUser() {
+    const headers = new Headers();
+
+    const init = {
+        method :'DELETE',
+        headers : headers,
+    };
+
+    fetch('https://reqres.in/api/user/2', init)
+        .then((response) => {
+            if(response.status == 204){
+                alert('l\'utilisateur a bien été supprimé')
+            }
+            else{
+                alert('impossible de supprimer')
+            }
+        })
+        .catch(error => alert('Erreur : '+error));
+}
+
+function editUserApiFetch() {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json')
+
+    const body = JSON.stringify({
+        name: document.getElementById('nom').value,
+        job: document.getElementById('job').value
+    });
+    const init = {
+        method :'PUT',
+        headers : headers,
+        body: body };
+
+    fetch('https://reqres.in/api/users/2', init)
+        .then((response) => {
+            return response.json();
+        })
+        .then((response) => {
+            console.log(response)
+        })
+        .catch(error => alert('Erreur : '+error));
+}
